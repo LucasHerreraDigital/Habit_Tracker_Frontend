@@ -1,31 +1,34 @@
 import { useNavigate } from "react-router";
-import { useAuth } from "../context/AuthContext"
-import { loginUser } from "../api/Auth";
+import { useAuth } from "../context/AuthContext";
+import { registerUser } from "../api/Auth";
 import { useState } from "react";
 import { AuthSwitch } from "../components/AuthSwitch";
 import { AuthLayout } from "../components/AuthLayout";
 
-
-export const Login = () => {
+export const Register = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    general?: string;
+  }>({});
 
   const validate = () => {
     const newErrors: typeof errors = {};
 
-    // validar email
+    // EMAIL
     if (!email) {
       newErrors.email = "El email es obligatorio";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "El email no es válido";
     }
 
-    // validar password
+    // PASSWORD
     if (!password) {
       newErrors.password = "La contraseña es obligatoria";
     } else if (password.length < 5) {
@@ -36,17 +39,24 @@ export const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) return;
 
     try {
-      const data = await loginUser(email, password);
+      const data = await registerUser(email, password);
+      console.log(data)
+
+      if (!data.token) {
+        setErrors({ general: data.message || "Error al registrarse" });
+        return;
+      }
+
       login(data.token);
       navigate("/");
-    } catch (err: any) {
-      setErrors({ general: "Credenciales incorrectas" });
+    } catch (err) {
+      setErrors({ general: "Error del servidor" });
     }
   };
 
@@ -54,16 +64,18 @@ export const Login = () => {
     <AuthLayout>
       <div className="min-h-screen flex items-center justify-center bg-transparent">
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleRegister}
           className="bg-white p-8 rounded-2xl shadow-xl w-80 flex flex-col gap-4"
         >
           <h2 className="text-2xl font-bold text-center text-sky-600">
-            Iniciar sesión
+            Crear cuenta
           </h2>
 
           {/* ERROR GENERAL */}
           {errors.general && (
-            <p className="text-red-500 text-sm text-center">{errors.general}</p>
+            <p className="text-red-500 text-sm text-center">
+              {errors.general}
+            </p>
           )}
 
           {/* EMAIL */}
@@ -80,7 +92,9 @@ export const Login = () => {
               }`}
             />
             {errors.email && (
-              <span className="text-red-500 text-xs mt-1">{errors.email}</span>
+              <span className="text-red-500 text-xs mt-1">
+                {errors.email}
+              </span>
             )}
           </div>
 
@@ -98,7 +112,9 @@ export const Login = () => {
               }`}
             />
             {errors.password && (
-              <span className="text-red-500 text-xs mt-1">{errors.password}</span>
+              <span className="text-red-500 text-xs mt-1">
+                {errors.password}
+              </span>
             )}
           </div>
 
@@ -106,12 +122,15 @@ export const Login = () => {
             type="submit"
             className="bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 transition-all duration-200 font-semibold"
           >
-            Login
+            Register
           </button>
+
+          {/* LINK A LOGIN */}
+          
           <AuthSwitch
-            text="¿No tenés cuenta?"
-            linkText="Registrate"
-            to="/register"
+            text="¿Ya tenés cuenta?"
+            linkText="Iniciá sesión"
+            to="/login"
           />
         </form>
       </div>
