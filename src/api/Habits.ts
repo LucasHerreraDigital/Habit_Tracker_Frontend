@@ -1,36 +1,24 @@
-const API_URL = "";
+import { fetchWithAuth } from "./FetchWithAuth";
 
-export const getHabits = async (token: string) => {
-  const res = await fetch(`${API_URL}/habits`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.json();
+export const getHabits = async () => {
+  return fetchWithAuth("/habits");
 };
 
-export const createHabit = async (title: string, token: string) => {
-  const res = await fetch(`${API_URL}/habits`, {
+export const createHabit = async (title: string) => {
+  return fetchWithAuth("/habits", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify({ title }),
   });
-  return res.json();
 };
 
-export const deleteHabit = async (id: string,token:string) =>{
-    await fetch(`${API_URL}/habits/${id}`,{
-        method: "DELETE",
-        headers:{Authorization:`Bearer ${token}`}
+export const deleteHabit = async (id: string) => {
+  return fetchWithAuth(`/habits/${id}`, {
+    method: "DELETE",
+  });
+};
 
-    })
-}
-
-export const toggleHabit = async (id:string,token:string)=>{
-    const res = await fetch(`${API_URL}/habits/${id}/toggle`,{
-        method:"PATCH",
-        headers:{Authorization: `Bearer ${token}`}
-    })
-    return res.json()
-}
+export const toggleHabit = async (id: string) => {
+  return fetchWithAuth(`/habits/${id}/toggle`, {
+    method: "PATCH",
+  });
+};
