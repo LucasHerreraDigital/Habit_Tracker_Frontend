@@ -17,8 +17,8 @@ export const deleteHabit = async (id: string) => {
   });
 };
 
-export const toggleHabit = async (id: string) => {
-  return fetchWithAuth(`/habits/${id}/toggle`, {
-    method: "PATCH",
+export const completeHabit = async (id: string) => {
+  return fetchWithAuth(`/habits/${id}/complete`, {
+    method: "POST",
   });
 };
