@@ -8,25 +8,51 @@ type AuthContextType = {
   isAuthenticated: boolean;
 };
 
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("token");
+  });
+
+  useEffect(()=>{
+    if(!token) return;
+    try{
+      const payload = JSON.parse(atob(token.split(".")[1]))
+      const isExpired = payload.exp *1000 < Date.now()
+      if(isExpired){
+        logout()
+      }
+    }catch{
+      logout()
+    }
+  },[token])
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) setToken(storedToken);
+    const syncToken = () => {
+      const stored = localStorage.getItem("token");
+      setToken(stored);
+    };
+
+    window.addEventListener("storage", syncToken);
+
+    syncToken();
+
+    return () => window.removeEventListener("storage", syncToken);
   }, []);
 
   const login = (newToken: string) => {
-    setToken(newToken);
     localStorage.setItem("token", newToken);
+    setToken(newToken);
   };
 
   const logout = () => {
-    setToken(null);
     localStorage.removeItem("token");
+    setToken(null);
   };
+  
+  const isAuthenticated = Boolean(token);
 
   return (
     <AuthContext.Provider
@@ -34,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         token,
         login,
         logout,
-        isAuthenticated: !!token,
+        isAuthenticated,
       }}
     >
       {children}
