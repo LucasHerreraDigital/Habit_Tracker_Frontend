@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.API_URI
+const API_URL = import.meta.env.VITE_API_URI
 
 export const fetchWithAuth = async (
     endpoint: string,
