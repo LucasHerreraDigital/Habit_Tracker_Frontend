@@ -14,13 +14,9 @@ export const Insights = ({ habits }: Props) => {
 
   return (
     <div className="bg-white rounded-2xl shadow p-5 mb-6">
-
       <ul className="space-y-2 text-sm text-gray-600">
         {insights.map((text, i) => (
-          <li
-            key={i}
-            className="bg-gray-50 px-3 py-2 rounded-lg"
-          >
+          <li key={i} className="bg-gray-50 px-3 py-2 rounded-lg">
             {text}
           </li>
         ))}
