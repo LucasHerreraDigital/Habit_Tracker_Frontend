@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Heatmap } from "../components/Heatmap";
 import { GlobalHeatmap } from "../components/GlobalHeatmap";
+import { Insights } from "../components/Insights";
 
 type Habit = {
   _id: string;
@@ -102,6 +103,7 @@ export const Habits = () => {
       <div className="w-full max-w-2xl">
         <h1 className="text-3xl font-bold mb-6 text-center">Mis Hábitos</h1>
         <GlobalHeatmap habits={habits}/>
+        <Insights habits={habits} />
 
         {/* FORM */}
         <form onSubmit={handleCreate} className="flex gap-2 mb-6">
