@@ -10,6 +10,7 @@ import confetti from "canvas-confetti";
 import { Heatmap } from "../components/Heatmap";
 import { GlobalHeatmap } from "../components/GlobalHeatmap";
 import { Insights } from "../components/Insights";
+import { useAuth } from "../context/AuthContext";
 
 type Habit = {
   _id: string;
@@ -23,9 +24,10 @@ export const Habits = () => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
 
-  // 🔥 animaciones
   const [animatedId, setAnimatedId] = useState<string | null>(null);
   const [floatingId, setFloatingId] = useState<string | null>(null);
+
+  const {logout} = useAuth();
 
   const fireConfetti = () => {
     confetti({
@@ -101,7 +103,16 @@ export const Habits = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center p-6">
       <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Mis Hábitos</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Mis Hábitos</h1>
+
+          <button
+            onClick={logout}
+            className="bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition text-sm"
+          >
+            Logout
+          </button>
+        </div>
         <GlobalHeatmap habits={habits}/>
         <Insights habits={habits} />
 
