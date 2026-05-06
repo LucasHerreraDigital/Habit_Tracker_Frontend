@@ -49,3 +49,40 @@ Aplicación fullstack para el seguimiento de hábitos diarios con sistema de str
 - Node.js >= 18
 - MongoDB (local o Atlas)
 
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/LucasHerreraDigital/Habit_Tracker_Frontend.git
+cd Habit_Tracker_Frontend
+npm install
+npm run dev
+```
+## 🔑 Variables de entorno
+
+API_URI="Tu variable de entorno"
+
+---
+
+## 🔐 Autenticación
+
+- JWT almacenado en localStorage  
+- Requests protegidas con token  
+- Redirección automática si no estás logueado  
+
+---
+
+## 🎯 Objetivo
+
+Proyecto de portfolio enfocado en:
+
+- React moderno  
+- Arquitectura escalable  
+- UX/UI  
+- Consumo de APIs  
+- Visualización de datos  
+
+---
+
+## 📄 Licencia
+
+MIT
