@@ -160,7 +160,6 @@ export const Habits = () => {
   };
 
   const isCompletedToday = (habit: Habit) => {
-    console.log(habit)
     const today = formatDate(new Date());
     return (
     habit.completedDates?.some((date) =>
