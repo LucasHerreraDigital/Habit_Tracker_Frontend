@@ -4,6 +4,7 @@ export const fetchBase = async (
   endpoint: string,
   options: RequestInit = {}
 ) => {
+  console.log("API:", API_URL);
   const res = await fetch(`${API_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
