@@ -94,7 +94,7 @@ export const Habits = () => {
   };
 
   const handleComplete = async (id: string) => {
-  const today = formatDate(new Date());
+
 
   // backup
   const previousHabits = habits;
