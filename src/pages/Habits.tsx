@@ -75,6 +75,7 @@ export const Habits = () => {
       fireConfetti()
 
       const updated = await completeHabit(id);
+      console.log(updated)
       setHabits((prev) => prev.map((h) => (h._id === id ? updated : h)));
 
       setTimeout(() => {
@@ -97,7 +98,7 @@ export const Habits = () => {
 
   const isCompletedToday = (habit: Habit) => {
     const today = new Date().toLocaleDateString("en-CA");
-    return habit.completedDates.includes(today)||false;
+    return habit.completedDates.includes(today);
   };
 
   return (
@@ -224,7 +225,7 @@ export const Habits = () => {
                     )}
 
                     {/* HEATMAP 👇 ACÁ */}
-                    <Heatmap dates={habit.completedDates||[]} />
+                    <Heatmap dates={habit.completedDates} />
                   </div>
                 </div>
 
