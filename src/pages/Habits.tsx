@@ -97,7 +97,7 @@ export const Habits = () => {
 
   const isCompletedToday = (habit: Habit) => {
     const today = new Date().toLocaleDateString("en-CA");
-    return habit.completedDates.includes(today);
+    return habit.completedDates.includes(today)||false;
   };
 
   return (
@@ -224,7 +224,7 @@ export const Habits = () => {
                     )}
 
                     {/* HEATMAP 👇 ACÁ */}
-                    <Heatmap dates={habit.completedDates} />
+                    <Heatmap dates={habit.completedDates||[]} />
                   </div>
                 </div>
 
