@@ -2,6 +2,10 @@ type HeatmapProps = {
   dates: string[];
 };
 
+const formatDate = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};
+
 export const Heatmap = ({ dates }: HeatmapProps) => {
   const today = new Date();
   const days = [];
@@ -10,9 +14,9 @@ export const Heatmap = ({ dates }: HeatmapProps) => {
     const d = new Date();
     d.setDate(today.getDate() - i);
 
-    const formatted = d.toLocaleDateString("en-CA");
+    const formatted = formatDate(d);
 
-    const count = dates.filter(date => date === formatted).length;
+    const count = dates.filter((date) => date === formatted).length;
 
     let color = "bg-gray-200";
 
@@ -32,7 +36,9 @@ export const Heatmap = ({ dates }: HeatmapProps) => {
         <div
           key={i}
           className={`w-3 h-3 rounded-sm ${day.color} hover:scale-125 transition`}
-          title={`${day.date} - ${day.count > 0 ? "Completado" : "No completado"}`}
+          title={`${day.date} - ${
+            day.count > 0 ? "Completado" : "No completado"
+          }`}
         />
       ))}
     </div>
