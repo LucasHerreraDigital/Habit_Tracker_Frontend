@@ -1,12 +1,11 @@
+import { formatDate } from "../utils/formatDate";
 type GlobalHeatmapProps = {
   habits: {
     completedDates: string[];
   }[];
 };
 
-const formatDate = (date: Date) => {
-  return date.toISOString().split("T")[0];
-};
+
 
 export const GlobalHeatmap = ({ habits }: GlobalHeatmapProps) => {
   const today = new Date();
@@ -21,7 +20,7 @@ export const GlobalHeatmap = ({ habits }: GlobalHeatmapProps) => {
 
     const formatted = formatDate(d);
 
-    const count = allDates.filter((date) => date === formatted).length;
+    const count = allDates.filter((date) => date.startsWith(formatted)).length;
 
     let color = "bg-gray-200";
 

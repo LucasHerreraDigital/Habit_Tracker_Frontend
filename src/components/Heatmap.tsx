@@ -1,9 +1,6 @@
+import { formatDate } from "../utils/formatDate";
 type HeatmapProps = {
   dates: string[];
-};
-
-const formatDate = (date: Date) => {
-  return date.toISOString().split("T")[0];
 };
 
 export const Heatmap = ({ dates }: HeatmapProps) => {
@@ -16,7 +13,7 @@ export const Heatmap = ({ dates }: HeatmapProps) => {
 
     const formatted = formatDate(d);
 
-    const count = dates.filter((date) => date === formatted).length;
+    const count = dates.filter((date) => date.startsWith(formatted)).length;
 
     let color = "bg-gray-200";
 

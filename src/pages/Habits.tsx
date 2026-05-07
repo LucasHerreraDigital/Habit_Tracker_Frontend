@@ -11,6 +11,7 @@ import { Heatmap } from "../components/Heatmap";
 import { GlobalHeatmap } from "../components/GlobalHeatmap";
 import { Insights } from "../components/Insights";
 import { useAuth } from "../context/AuthContext";
+import { formatDate } from "../utils/formatDate.js";
 
 type Habit = {
   _id: string;
@@ -97,7 +98,7 @@ export const Habits = () => {
 
   const isCompletedToday = (habit: Habit) => {
     console.log(habit)
-    const today = new Date().toISOString().split("T")[0];
+    const today = formatDate(new Date());
     return (
     habit.completedDates?.some((date) =>
       date.startsWith(today)
