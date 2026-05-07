@@ -96,6 +96,7 @@ export const Habits = () => {
   };
 
   const isCompletedToday = (habit: Habit) => {
+    console.log(habit)
     const today = new Date().toISOString().split("T")[0];
     return (
     habit.completedDates?.some((date) =>
