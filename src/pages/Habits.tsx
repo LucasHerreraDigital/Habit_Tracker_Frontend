@@ -75,7 +75,6 @@ export const Habits = () => {
       fireConfetti()
 
       const updated = await completeHabit(id);
-      console.log(updated)
       setHabits((prev) => prev.map((h) => (h._id === id ? updated : h)));
 
       setTimeout(() => {
@@ -97,7 +96,7 @@ export const Habits = () => {
   };
 
   const isCompletedToday = (habit: Habit) => {
-    const today = new Date().toLocaleDateString("en-CA");
+    const today = new Date().toISOString().split("T")[0];
     return habit.completedDates.includes(today);
   };
 
