@@ -13,6 +13,7 @@ import { GlobalHeatmap } from "../components/GlobalHeatmap";
 import { Insights } from "../components/Insights";
 import { useAuth } from "../context/AuthContext";
 import { AIInsight } from "../components/AIInsight.js";
+import { formatDate } from "../utils/formatDate.js";
 
 
 type Habit = {
