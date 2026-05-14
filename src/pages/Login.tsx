@@ -42,6 +42,7 @@ export const Login = () => {
     if (!validate()) return;
 
     try {
+      
       const data = await loginUser(email, password);
       login(data.token);
       navigate("/");
