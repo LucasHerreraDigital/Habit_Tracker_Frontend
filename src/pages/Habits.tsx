@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   getHabits,
   deleteHabit,
   createHabit,
   completeHabit,
 } from "../api/Habits";
+import { getAIInsight } from "../api/AI.js";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Heatmap } from "../components/Heatmap";
 import { GlobalHeatmap } from "../components/GlobalHeatmap";
 import { Insights } from "../components/Insights";
 import { useAuth } from "../context/AuthContext";
-import { formatDate } from "../utils/formatDate.js";
+import { AIInsight } from "../components/AIInsight.js";
+
 
 type Habit = {
   _id: string;
@@ -28,7 +30,44 @@ export const Habits = () => {
   const [animatedId, setAnimatedId] = useState<string | null>(null);
   const [floatingId, setFloatingId] = useState<string | null>(null);
 
+  const [insight,setInsight] = useState("")
+  const [loadingInsight, setLoadingInsight] = useState(false)
+
   const {logout} = useAuth();
+
+  const hasLoadedInsight = useRef(false);
+
+  const stats = {
+    totalHabits: habits.length,
+
+    bestDay:
+      habits.length > 0
+        ? "lunes"
+        : "Sin datos",
+
+    activeDays: habits.reduce(
+      (acc, habit) => acc + habit.completedDates.length,
+      0
+    ),
+
+    discipline:
+      habits.reduce(
+        (acc, habit) => acc + habit.completedDates.length,
+        0
+      ) >= 10
+        ? "alta"
+        : "baja",
+  };
+
+  useEffect(() => {
+    if (
+      habits.length > 0 &&
+      !hasLoadedInsight.current
+    ) {
+      hasLoadedInsight.current = true;
+      loadInsight();
+    }
+  }, [habits]);
 
   const fireConfetti = () => {
     confetti({
@@ -39,6 +78,21 @@ export const Habits = () => {
       scalar: 0.8,
       colors: ["#22c55e", "#3b82f6", "#f59e0b"]
     });
+  };
+
+  const loadInsight = async () => {
+    try {
+      setLoadingInsight(true);
+
+      const data = await getAIInsight(stats);
+
+      setInsight(data.insight);
+
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoadingInsight(false);
+    }
   };
 
   const fetchHabits = async () => {
@@ -182,6 +236,10 @@ export const Habits = () => {
         </div>
         <GlobalHeatmap habits={habits}/>
         <Insights habits={habits} />
+        <AIInsight
+          insight={insight}
+          loading={loadingInsight}
+        />
 
         {/* FORM */}
         <form onSubmit={handleCreate} className="flex gap-2 mb-6">
