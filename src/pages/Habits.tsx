@@ -14,6 +14,7 @@ import { Insights } from "../components/Insights";
 import { useAuth } from "../context/AuthContext";
 import { AIInsight } from "../components/AIInsight.js";
 
+
 type Habit = {
   _id: string;
   title: string;
@@ -111,47 +112,113 @@ export const Habits = () => {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!title.trim()) return;
 
+    const tempHabit: Habit = {
+      _id: crypto.randomUUID(),
+      title,
+      streak: 0,
+      completedDates: [],
+    };
+
+    // UI instantánea
+    setHabits((prev) => [tempHabit, ...prev]);
+
+    const oldTitle = title;
+    setTitle("");
+
     try {
-      const newHabit = await createHabit(title);
-      setHabits((prev) => [newHabit, ...prev]);
-      setTitle("");
+      const createdHabit = await createHabit(oldTitle);
+
+      // reemplazar temp por real
+      setHabits((prev) =>
+        prev.map((h) =>
+          h._id === tempHabit._id ? createdHabit : h
+        )
+      );
     } catch (error) {
       console.error(error);
+
+      // rollback
+      setHabits((prev) =>
+        prev.filter((h) => h._id !== tempHabit._id)
+      );
     }
   };
 
   const handleComplete = async (id: string) => {
+
+
+  // backup
+  const previousHabits = habits;
+
+    // animaciones instant
+    setAnimatedId(id);
+    setFloatingId(id);
+
+    fireConfetti();
+
+    // update instantáneo
+    setHabits((prev) =>
+      prev.map((habit) => {
+        if (habit._id !== id) return habit;
+
+        return {
+          ...habit,
+          streak: habit.streak + 1,
+          completedDates: [
+            ...habit.completedDates,
+            new Date().toISOString(),
+          ],
+        };
+      })
+    );
+
     try {
-      setAnimatedId(id);
-      setFloatingId(id);
-      fireConfetti()
-
       const updated = await completeHabit(id);
-      setHabits((prev) => prev.map((h) => (h._id === id ? updated : h)));
 
+      // sync real backend
+      setHabits((prev) =>
+        prev.map((h) => (h._id === id ? updated : h))
+      );
+    } catch (error) {
+      console.error(error);
+
+      // rollback
+      setHabits(previousHabits);
+    } finally {
       setTimeout(() => {
         setAnimatedId(null);
         setFloatingId(null);
       }, 800);
-    } catch (error) {
-      console.error(error);
     }
   };
 
   const handleDelete = async (id: string) => {
+    const previousHabits = habits;
+
+    // borrar instantáneo
+    setHabits((prev) =>
+      prev.filter((h) => h._id !== id)
+    );
+
     try {
       await deleteHabit(id);
-      setHabits((prev) => prev.filter((h) => h._id !== id));
     } catch (error) {
       console.error(error);
+
+      // rollback
+      setHabits(previousHabits);
     }
   };
 
   const isCompletedToday = (habit: Habit) => {
-    const today = new Date().toLocaleDateString("en-CA");
-    return habit.completedDates.includes(today);
+    const today = formatDate(new Date());
+    return (
+    habit.completedDates?.some((date) =>
+      date.startsWith(today)
+    ) || false)
   };
 
   return (
@@ -282,7 +349,7 @@ export const Habits = () => {
                     )}
 
                     {/* HEATMAP 👇 ACÁ */}
-                    <Heatmap dates={habit.completedDates} />
+                    <Heatmap dates={habit.completedDates||[]} />
                   </div>
                 </div>
 

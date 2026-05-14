@@ -1,3 +1,5 @@
+import { formatDate } from "../utils/formatDate";
+
 type GlobalHeatmapProps = {
   habits: {
     completedDates: string[];
@@ -15,9 +17,11 @@ export const GlobalHeatmap = ({ habits }: GlobalHeatmapProps) => {
     const d = new Date();
     d.setDate(today.getDate() - i);
 
-    const formatted = d.toLocaleDateString("en-CA");
+    const formatted = formatDate(d);
 
-    const count = allDates.filter((date) => date === formatted).length;
+    const count = allDates.filter((date) =>
+      date.startsWith(formatted)
+    ).length;
 
     let color = "bg-gray-200";
 
@@ -34,12 +38,12 @@ export const GlobalHeatmap = ({ habits }: GlobalHeatmapProps) => {
 
   return (
     <div className="w-full flex justify-center mb-6">
-      <div className="w-full max-w-3xl">
-        <div className="grid grid-rows-7 grid-flow-col gap-[3px] justify-center">
+      <div className="overflow-x-auto">
+        <div className="grid grid-rows-7 grid-flow-col gap-[1px] bg-gray-300 p-[2px] rounded-md">
           {days.map((day, i) => (
             <div
               key={i}
-              className={`w-3 h-3 rounded-sm ${day.color} hover:scale-125 transition`}
+              className={`w-4 h-4 ${day.color} rounded-[2px] hover:scale-110 transition-transform duration-150`}
               title={`${day.date} - ${day.count} hábitos`}
             />
           ))}
